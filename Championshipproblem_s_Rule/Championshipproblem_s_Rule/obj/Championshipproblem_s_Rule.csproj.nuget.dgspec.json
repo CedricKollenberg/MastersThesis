@@ -1,0 +1,62 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Documents\\Studium\\Hochschule Fulda\\Master\\Masterarbeit\\Implementierungen\\Championshipproblem_s_Rule\\Championshipproblem_s_Rule\\Championshipproblem_s_Rule.csproj": {}
+  },
+  "projects": {
+    "D:\\Documents\\Studium\\Hochschule Fulda\\Master\\Masterarbeit\\Implementierungen\\Championshipproblem_s_Rule\\Championshipproblem_s_Rule\\Championshipproblem_s_Rule.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Documents\\Studium\\Hochschule Fulda\\Master\\Masterarbeit\\Implementierungen\\Championshipproblem_s_Rule\\Championshipproblem_s_Rule\\Championshipproblem_s_Rule.csproj",
+        "projectName": "Championshipproblem_s_Rule",
+        "projectPath": "D:\\Documents\\Studium\\Hochschule Fulda\\Master\\Masterarbeit\\Implementierungen\\Championshipproblem_s_Rule\\Championshipproblem_s_Rule\\Championshipproblem_s_Rule.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "D:\\Documents\\Studium\\Hochschule Fulda\\Master\\Masterarbeit\\Implementierungen\\Championshipproblem_s_Rule\\Championshipproblem_s_Rule\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

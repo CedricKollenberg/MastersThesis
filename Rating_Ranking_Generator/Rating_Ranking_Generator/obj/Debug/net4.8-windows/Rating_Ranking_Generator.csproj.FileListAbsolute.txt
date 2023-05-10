@@ -1,0 +1,14 @@
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\obj\Debug\net4.8-windows\Rating_Ranking_Generator.csprojAssemblyReference.cache
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\obj\Debug\net4.8-windows\Rating_Ranking_Generator.Form1.resources
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\obj\Debug\net4.8-windows\Rating_Ranking_Generator.csproj.GenerateResource.cache
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\obj\Debug\net4.8-windows\Rating_Ranking_Generator.AssemblyInfoInputs.cache
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\obj\Debug\net4.8-windows\Rating_Ranking_Generator.AssemblyInfo.cs
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\obj\Debug\net4.8-windows\Rating_Ranking_Generator.csproj.CoreCompileInputs.cache
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\bin\Debug\net4.8-windows\Rating_Ranking_Generator.exe.config
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\bin\Debug\net4.8-windows\Rating_Ranking_Generator.exe
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\bin\Debug\net4.8-windows\Rating_Ranking_Generator.pdb
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\bin\Debug\net4.8-windows\NLapack.Managed.dll
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\bin\Debug\net4.8-windows\NLapack.dll
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\obj\Debug\net4.8-windows\Rating_Ranking_Generator.csproj.CopyComplete
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\obj\Debug\net4.8-windows\Rating_Ranking_Generator.exe
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Rating_Ranking_Generator\Rating_Ranking_Generator\obj\Debug\net4.8-windows\Rating_Ranking_Generator.pdb

@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "t8+o0r8AVGyouYYtwrxUAE+kdqxwEDu6jlYTdVYTqkEIGNEBKtr18Rz3ttqVm+0sWCiOkx3tdpc02jkFpWLxTg==",
+  "success": true,
+  "projectFilePath": "D:\\Documents\\Studium\\Hochschule Fulda\\Master\\Masterarbeit\\Implementierungen\\Rating_Ranking_Generator\\Rating_Ranking_Generator\\Rating_Ranking_Generator.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\User\\.nuget\\packages\\mathnet.numerics\\5.0.0\\mathnet.numerics.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
