@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 
 namespace Championshipproblem_s_Rule
-{ 
+{
     class Program
     {
-        static string data = @"D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Data";
+        static string data = @"D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Data\";
         static int s = 2;
 
         static void Main(string[] args)
@@ -146,8 +146,8 @@ namespace Championshipproblem_s_Rule
 
                             if (j <= gamesPerGameday)
                             {
-                                teams.Add(homeTeam, new Team(homeTeam,0));
-                                teams.Add(awayTeam, new Team(awayTeam,0));
+                                teams.Add(homeTeam, new Team(homeTeam, 0));
+                                teams.Add(awayTeam, new Team(awayTeam, 0));
                             }
 
                             Team h = teams[homeTeam];
@@ -170,8 +170,6 @@ namespace Championshipproblem_s_Rule
                                 a.addPoints(1);
                             }
                         }
-
-                        string[,] matches = new string[lines.Length - consideredGames - 1 - (numberGamedays - i),2];
 
                         foreach (Team t in teams.Values)
                         {
@@ -207,8 +205,8 @@ namespace Championshipproblem_s_Rule
                             }
                             else
                             {
-                                matches[m - consideredGames - 1 - xCounter, 0] = h.getName();
-                                matches[m - consideredGames - 1 - xCounter, 1] = a.getName();
+                                h.addOpponent(a.getName());
+                                a.addOpponent(h.getName());
 
                                 h.addMaxPoints(s);
                                 a.addMaxPoints(s);
@@ -217,6 +215,44 @@ namespace Championshipproblem_s_Rule
 
                         Team x = teams[k];
                         teams.Remove(k);
+
+                        if (!applyRules(teams,x))
+                        {
+                            abortedTeams.Add(x.getName());
+                            continue;
+                        }
+
+                        int matchNumber = 0;
+
+                        foreach (Team t in teams.Values)
+                        {
+                            matchNumber += t.getOpponents().Count;
+                        }
+
+                        if (matchNumber == 0)
+                        {
+                            counter++;
+                            continue;
+                        }
+
+                        matchNumber /= 2;
+
+                        string[,] matches = new string[matchNumber, 2];
+
+                        int matchCounter = 0;
+
+                        foreach (Team t in teams.Values)
+                        {
+                            for (int p= 0; p < t.getOpponents().Count;)
+                            {
+                                string opp = t.getOpponents()[p];
+                                matches[matchCounter, 0] = t.getName();
+                                matches[matchCounter, 1] = opp;
+                                t.removeOpponent(opp);
+                                teams[opp].removeOpponent(t.getName());
+                                matchCounter++;
+                            }
+                        }
 
                         List<KeyValuePair<string, Team>> sortedTeams = teams.ToList();
 
@@ -318,7 +354,7 @@ namespace Championshipproblem_s_Rule
                                     {
                                         for (int j = 1; j <= matches.GetLength(0); j++)
                                         {
-                                            adjacencyList[0].Add(new Edge(0,j,s));
+                                            adjacencyList[0].Add(new Edge(0, j, s));
                                         }
                                     }
                                     else if (n <= matches.GetLength(0))
@@ -362,10 +398,10 @@ namespace Championshipproblem_s_Rule
                         switch (algorithmMode)
                         {
                             case 0:
-                                flow = MaxFlow.EdmondsKarp(graph,ref iterations);
+                                flow = MaxFlow.EdmondsKarp(graph, ref iterations);
                                 break;
                             case 1:
-                                flow = MaxFlow.Dinic(graph,dataStructure, ref iterations);
+                                flow = MaxFlow.Dinic(graph, dataStructure, ref iterations);
                                 break;
                             case 2:
                                 flow = MaxFlow.PushRelabel(graph, 0, ref iterations);
@@ -394,6 +430,118 @@ namespace Championshipproblem_s_Rule
             timer.Stop();
 
             csvData.AppendLine(modeName + ";" + dataStructureName + ";" + timer.Elapsed + ";" + iterations + ";" + counts[0] + ";" + counts[1] + ";" + counts[2] + ";" + counts[3] + ";" + counts[4] + ";" + counts[5] + ";" + counts[6] + ";" + counts[7] + ";" + counts[8] + ";" + counts[9] + ";" + counts[10]); ;
+        }
+
+        public static bool applyRules(Dictionary<string,Team> teams, Team x)
+        {
+            // Rule 1
+            foreach (Team y in teams.Values)
+            {
+                if (y.getPoints() > x.getPoints())
+                {
+                    //Console.WriteLine("Championship problem is not possible.\nReason: Rule 1\nDetails: Team " + y.getName() + " has already " + y.getPoints() + " points.\nTeam " + x.getName() + " has just " + x.getPoints() + " points.");
+                    return false;
+                }
+            }
+
+            // Rule 2
+            Queue<Team> consideredTeams = new Queue<Team>();
+
+            foreach (Team t in teams.Values)
+            {
+                consideredTeams.Enqueue(t);
+            }
+
+            while (consideredTeams.Count > 0)
+            {
+                Team y = consideredTeams.Dequeue();
+
+                int possiblePoints = y.getPoints() + y.getOpponents().Count * s;
+
+                if (possiblePoints <= x.getPoints())
+                {
+                    for (int i = 0; i < y.getOpponents().Count;)
+                    {
+                        string t = y.getOpponents()[i];
+                        y.addPoints(s);
+                        Team k = teams[t];
+                        consideredTeams.Enqueue(k);
+                        y.removeOpponent(t);
+                        k.removeOpponent(y.getName());
+                    }
+                }
+            }
+
+            // Rule 3
+            foreach (Team y in teams.Values)
+            {
+                if (y.getPoints().Equals(x.getPoints()))
+                {
+                    for (int i = 0; i < y.getOpponents().Count;)
+                    {
+                        string t = y.getOpponents()[i];
+                        Team k = teams[t];
+                        k.addPoints(s);
+                        y.removeOpponent(t);
+                        k.removeOpponent(y.getName());
+                    }
+                }
+            }
+
+            // Rule 4
+            foreach (Team y in teams.Values)
+            {
+                int possiblePoints = y.getPoints() + y.getOpponents().Count;
+
+                if (y.getPoints() + s > x.getPoints() && possiblePoints <= x.getPoints())
+                {
+                    for (int i = 0; i < y.getOpponents().Count;)
+                    {
+                        string t = y.getOpponents()[i];
+                        y.addPoints(1);
+                        Team k = teams[t];
+                        k.addPoints(1);
+                        y.removeOpponent(t);
+                        k.removeOpponent(y.getName());
+                    }
+                }
+            }
+
+            // Rule 5
+            foreach (Team y in teams.Values)
+            {
+                if (y.getPoints() > x.getPoints())
+                {
+                    //Console.WriteLine("Championship problem is not possible.\nReason: Rule 5\nDetails: Team " + y.getName() + " has already " + y.getPoints() + " points.\nTeam " + x.getName() + " has just " + x.getPoints() + " points.");
+                    return false;
+                }
+            }
+
+            // Rule 6
+            int overallCompleteReceptiveness = 0;
+            int overallSurplus = 0;
+
+            foreach (Team y in teams.Values)
+            {
+                int diff;
+
+                if ((diff = y.getPoints() + y.getOpponents().Count - x.getPoints()) > 0)
+                {
+                    overallSurplus += diff;
+                }
+                else
+                {
+                    overallCompleteReceptiveness -= diff;
+                }
+            }
+
+            if (overallSurplus > overallCompleteReceptiveness)
+            {
+                //Console.WriteLine("Championship problem is not possible.\nReason: Rule 6\nDetails: Overall surplus of " + overallSurplus + " is bigger than the overall complete receptiveness " + overallCompleteReceptiveness + ".");
+                return false;
+            }
+
+            return true;
         }
     }
 }

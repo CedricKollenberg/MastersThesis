@@ -55,5 +55,10 @@ namespace Championshipproblem_s_Rule
         {
             this.opponents.Add(opp);
         }
+
+        public void removeOpponent(string opp)
+        {
+            this.opponents.Remove(opp);
+        }
     }
 }
