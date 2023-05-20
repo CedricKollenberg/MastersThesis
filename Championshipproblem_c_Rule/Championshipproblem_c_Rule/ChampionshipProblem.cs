@@ -273,6 +273,7 @@ namespace Championshipproblem_c_Rule
             {
                 if (counter.Equals(maxIterations))
                 {
+                    Console.WriteLine("max Iterations");
                     return -maxIterations;
                 }
 
@@ -569,14 +570,15 @@ namespace Championshipproblem_c_Rule
 
         public int applyHeuristics(int mode, int counter, int rule = 0)
         {
+            Stack<Team> sTeams = new();
+            Stack<Team> winners = new();
+            List<Team> abortTeams = new();
+            Dictionary<string, HashSet<Team>[]> examinedTeams = new();
+            Dictionary<string, int> levelAbort = new();
+            bool lastLevelChecked = false;
+
             if (surplusTeams.Count > 0)
             {
-                Stack<Team> sTeams = new();
-                Stack<Team> winners = new();
-                List<Team> abortTeams = new();
-                Dictionary<string, HashSet<Team>[]> examinedTeams = new();
-                Dictionary<string, int> levelAbort = new();
-
                 switch (mode)
                 {
                     case 0:
@@ -598,15 +600,19 @@ namespace Championshipproblem_c_Rule
                             levelAbort.Add(s, maxWins);
                         }
                         break;
-                }
-
-                bool lastLevelChecked = false;
+                }                
 
                 setNextSurplusTeam(sTeams);
 
                 while (true)
                 {
                     Team k = sTeams.Peek();
+
+                    if (lastLevelChecked)
+                    {
+                        level--;
+                        recover(k);
+                    }
 
                     Team surplusOpponent = getSurplusOpponent(k, mode, abortTeams, examinedTeams, levelAbort);
 
@@ -619,72 +625,9 @@ namespace Championshipproblem_c_Rule
                         return -maxIterations;
                     }
 
-                    if (surplusOpponent is null || !applySimpleExitRules(k,rule) || lastLevelChecked)
+                    if (surplusOpponent is null || !applySimpleExitRules(k,rule))
                     {
-                        sTeams.Pop();
-
-                        lastLevelChecked = false;
-
-                        switch (mode)
-                        {
-                            case 0:
-                                examinedTeams[k.getName()][level] = new();
-
-                                break;
-                            case 1:
-                                for (int i = 0; i < abortTeams.Count; i++)
-                                {
-                                    Team t = abortTeams[i];
-
-                                    if (t.getLevel() >= level)
-                                    {
-                                        abortTeams.Remove(t);
-                                        i--;
-                                    }
-                                }
-
-                                break;
-                            case 2:
-                                break;
-                            default:
-                                break;
-                        }
-
-                        if (winners.Count > 0)
-                        {
-                            Team loser = sTeams.Peek();
-                            Team winner = winners.Pop();
-
-                            loser.removeLoss(winner.getName());
-                            winner.removeWin(loser.getName(), c);
-
-                            level--;
-
-                            switch (mode)
-                            {
-                                case 0:
-                                    examinedTeams[loser.getName()][level].Add(winner);
-
-                                    break;
-                                case 1:
-                                    winner.setLevel(level);
-                                    winner.setExitOpponent(loser);
-                                    abortTeams.Add(winner);
-
-                                    break;
-                                case 2:
-                                    int l = levelAbort[winner.getName()];
-
-                                    if (level < l)
-                                    {
-                                        levelAbort[winner.getName()] = level;
-                                    }
-
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
+                        recover(k);
 
                         if (sTeams.Count == 0)
                         {
@@ -709,7 +652,7 @@ namespace Championshipproblem_c_Rule
                                     }
                                 case 2:
                                     return applyHeuristics(--mode, counter);
-                            }                   
+                            }
                         }
                     }
                     else
@@ -750,6 +693,74 @@ namespace Championshipproblem_c_Rule
             //printResult();
 
             return counter;
+
+            void recover(Team k)
+            {
+                sTeams.Pop();
+
+                lastLevelChecked = false;
+
+                switch (mode)
+                {
+                    case 0:
+                        examinedTeams[k.getName()][level] = new();
+
+                        break;
+                    case 1:
+                        for (int i = 0; i < abortTeams.Count; i++)
+                        {
+                            Team t = abortTeams[i];
+
+                            if (t.getLevel() >= level)
+                            {
+                                abortTeams.Remove(t);
+                                i--;
+                            }
+                        }
+
+                        break;
+                    case 2:
+                        break;
+                    default:
+                        break;
+                }
+
+                if (winners.Count > 0)
+                {
+                    Team loser = sTeams.Peek();
+                    Team winner = winners.Pop();
+
+                    loser.removeLoss(winner.getName());
+                    winner.removeWin(loser.getName(), c);
+
+                    level--;
+
+                    switch (mode)
+                    {
+                        case 0:
+                            examinedTeams[loser.getName()][level].Add(winner);
+
+                            break;
+                        case 1:
+                            winner.setLevel(level);
+                            winner.setExitOpponent(loser);
+                            abortTeams.Add(winner);
+
+                            break;
+                        case 2:
+                            int l = levelAbort[winner.getName()];
+
+                            if (level < l)
+                            {
+                                levelAbort[winner.getName()] = level;
+                            }
+
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         }
 
         private bool setNextSurplusTeam(Stack<Team> sTeams)

@@ -8,14 +8,12 @@ namespace Championshipproblem_c_Rule
 {
     class Program
     {
-        static string data = @"D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Data";
-        static int c = 3;
+        static string data = @"D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Data\";
+        static int c = 2;
 
         static void Main(string[] args)
         {
-            SolveChampionshipProblems(1, 0, 0.1, 0.0, 0.0, true, 1000000, 100); // Brute Force
-            SolveChampionshipProblems(1, 0, 0.1, 0.0, 0.0, true, 1000000, 10, 1, null, 25); // My Version
-            SolveChampionshipProblems(0, 2, 0.0, 0.0, 1.0, false, 1000000, 10, 0); // Paper Version
+            SolveChampionshipProblems(1, 0, 0.1, 0.0, 0.0, true, 1000000, 10, 1, null, 25);
         }
 
         public static void AbortTest()
@@ -454,6 +452,8 @@ namespace Championshipproblem_c_Rule
 
                     break;
                 case 10: // Data
+                    csvData.AppendLine("Iterations;Runtime");
+                    csvData.AppendLine(iterations + ";" + s.Elapsed);
                     File.WriteAllText(data + "Results\\ChampionshipProblemResult_" + configuration + ".csv", csvData.ToString());
 
                     break;
