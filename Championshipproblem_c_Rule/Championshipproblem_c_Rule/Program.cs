@@ -9,7 +9,7 @@ namespace Championshipproblem_c_Rule
     class Program
     {
         static string data = @"D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Data\";
-        static int c = 2;
+        static int c = 3;
 
         static void Main(string[] args)
         {
