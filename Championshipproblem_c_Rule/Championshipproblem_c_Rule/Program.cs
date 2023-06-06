@@ -8,7 +8,8 @@ namespace Championshipproblem_c_Rule
 {
     class Program
     {
-        static string data = @"D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Data\";
+        // program variables
+        static string data = @"..\..\..\..\..\Data\";
         static int c = 3;
 
         static void Main(string[] args)
@@ -16,6 +17,7 @@ namespace Championshipproblem_c_Rule
             SolveChampionshipProblems(1, 0, 0.1, 0.0, 0.0, true, 1000000, 10, 1, null, 25);
         }
 
+        // test abort methods
         public static void AbortTest()
         {
             var csvData = new StringBuilder();
@@ -36,6 +38,7 @@ namespace Championshipproblem_c_Rule
             File.WriteAllText(data + "\\Results\\RuntimeResult_AbortTest.csv", csvData.ToString());
         }
 
+        // test efficiency of simple rules
         public static void SimpleRuleTest()
         {
             var csvData = new StringBuilder();
@@ -46,12 +49,13 @@ namespace Championshipproblem_c_Rule
             {
                 Console.WriteLine("Iteration " + j);
 
-                for (int rule = 7; rule <= 9; rule++)
+                for (int rule = 7; rule <= 9; rule++) // vary simple rule
                 {
                     SolveChampionshipProblems(1, 0, 0.1, 0.0, 0.0, true, 1000000, 5, 1, csvData, 25, false, int.MaxValue, 0, rule);
                     SolveChampionshipProblems(0, 1, 0.0, 0.15, 0.175, true, 1000000, 5, 1, csvData, 20, false, int.MaxValue, 0, rule);
                 }
 
+                // compare to standard configuration
                 SolveChampionshipProblems(1, 0, 0.1, 0.0, 0.0, true, 1000000, 5, 1, csvData, 25);
                 SolveChampionshipProblems(0, 1, 0.0, 0.15, 0.175, true, 1000000, 5, 1, csvData, 20);
             }
@@ -59,6 +63,7 @@ namespace Championshipproblem_c_Rule
             File.WriteAllText(data + "\\Results\\RuntimeResult_SimpleRuleTest.csv", csvData.ToString());
         }
 
+        // test efficiency of rules
         public static void RuleTest()
         {
             var csvData = new StringBuilder();
@@ -69,12 +74,13 @@ namespace Championshipproblem_c_Rule
             {
                 Console.WriteLine("Iteration " + j);
 
-                for (int rule = 1; rule <= 6; rule++)
+                for (int rule = 1; rule <= 6; rule++) // vary rule
                 {
                     SolveChampionshipProblems(1, 0, 0.1, 0.0, 0.0, true, 1000000, 4, 1, csvData, 25, false, int.MaxValue, rule);
                     SolveChampionshipProblems(0, 1, 0.0, 0.15, 0.175, true, 1000000, 4, 1, csvData, 20, false, int.MaxValue, rule);
                 }
 
+                // compare to standard configuration
                 SolveChampionshipProblems(1, 0, 0.1, 0.0, 0.0, true, 1000000, 4, 1, csvData, 25);
                 SolveChampionshipProblems(0, 1, 0.0, 0.15, 0.175, true, 1000000, 4, 1, csvData, 20);
             }
@@ -82,6 +88,8 @@ namespace Championshipproblem_c_Rule
             File.WriteAllText(data + "\\Results\\RuntimeResult_RuleTest.csv", csvData.ToString());
         }
 
+        // test variable depth
+        // decrement depth if level is reached
         public static void VariableDepthTest()
         {
             var csvData = new StringBuilder();
@@ -92,15 +100,16 @@ namespace Championshipproblem_c_Rule
             {
                 Console.WriteLine("Iteration " + j);
 
-                for (int level = 1; level <= 50; level++)
+                for (int level = 1; level <= 50; level++) // vary level
                 {
-                    for (int k = 1; k <= 2; k++)
+                    for (int k = 1; k <= 2; k++) // vary depth
                     {
                         SolveChampionshipProblems(k, 0, 0.1, 0.0, 0.0, true, 1000, 3, 1, csvData, 25, true, level);
                         SolveChampionshipProblems(0, k, 0.0, 0.15, 0.175, true, 1000, 3, 1, csvData, 20, true, level);
                     }
                 }
 
+                // compare to standard configuration
                 SolveChampionshipProblems(1, 0, 0.1, 0.0, 0.0, true, 1000, 3, 1, csvData, 25);
                 SolveChampionshipProblems(0, 1, 0.0, 0.15, 0.175, true, 1000, 3, 1, csvData, 20);
             }
@@ -108,6 +117,9 @@ namespace Championshipproblem_c_Rule
             File.WriteAllText(data + "\\Results\\RuntimeResult_VariableDepthTest.csv", csvData.ToString());
         }
 
+        // test complexity of problems
+        // if complexity is below the limit, reset depth
+        // otherwise keep configuration
         public static void ComplexityTest()
         {
             var csvData = new StringBuilder();
@@ -118,17 +130,19 @@ namespace Championshipproblem_c_Rule
             {
                 Console.WriteLine("Iteration " + i);
 
+                // compare to configuration without depth
                 SolveChampionshipProblems(0, 0, 0, 0, 0, true, 1000, 2, 1, csvData);
 
-                SolveChampionshipProblems(1, 0, 0.1, 0, 0, true, 1000, 2, 1, csvData, 0);
-                SolveChampionshipProblems(1, 0, 0.1, 0, 0, true, 1000, 2, 1, csvData, 25);
+                SolveChampionshipProblems(1, 0, 0.1, 0, 0, true, 1000, 2, 1, csvData, 0); // no limit
+                SolveChampionshipProblems(1, 0, 0.1, 0, 0, true, 1000, 2, 1, csvData, 25); // limit of 25
 
+                // additional variation of kappa and zeta
                 for (double kappa = 0.15; kappa <= 0.25; kappa += 0.025)
                 {
                     for (double zeta = 0.15; zeta <= 0.25; zeta += 0.025)
                     {
-                        SolveChampionshipProblems(0, 1, 0, kappa, zeta, true, 1000, 2, 1, csvData, 0);
-                        SolveChampionshipProblems(0, 1, 0, kappa, zeta, true, 1000, 2, 1, csvData, 20);
+                        SolveChampionshipProblems(0, 1, 0, kappa, zeta, true, 1000, 2, 1, csvData, 0); // no limit
+                        SolveChampionshipProblems(0, 1, 0, kappa, zeta, true, 1000, 2, 1, csvData, 20); // limit of 20
                     }
                 }
             }
@@ -136,6 +150,7 @@ namespace Championshipproblem_c_Rule
             File.WriteAllText(data + "\\Results\\RuntimeResult_ComplexityTest.csv", csvData.ToString());
         }
 
+        // test parameters in mulitple iterations
         public static void MultiIterationTest()
         {
             var csvData = new StringBuilder();
@@ -146,15 +161,15 @@ namespace Championshipproblem_c_Rule
             {
                 Console.WriteLine("Iteration: " + i);
 
-                for (int T1 = 0; T1 <= 1; T1++)
+                for (int T1 = 0; T1 <= 1; T1++) // vary depth 1
                 {
-                    for (int T2 = 0; T2 <= 1; T2++)
+                    for (int T2 = 0; T2 <= 1; T2++) // vary depth 2
                     {
-                        for (double epsilon = 0.1; epsilon <= 0.5; epsilon += 0.1)
+                        for (double epsilon = 0.1; epsilon <= 0.5; epsilon += 0.1) // vary epsilon
                         {
-                            for (double kappa = 0.0; kappa <= 0.15; kappa += 0.05)
+                            for (double kappa = 0.0; kappa <= 0.15; kappa += 0.05) // vary kappa
                             {
-                                for (double zeta = 0.0; zeta <= 0.15; zeta += 0.05)
+                                for (double zeta = 0.0; zeta <= 0.15; zeta += 0.05) // vary zeta
                                 {
                                     SolveChampionshipProblems(T1, T2, epsilon, kappa, zeta, true, 1000, 1, 1, csvData);
                                 }
@@ -167,23 +182,25 @@ namespace Championshipproblem_c_Rule
             File.WriteAllText(data + "\\Results\\RuntimeResult_MultiIterationTest.csv", csvData.ToString());
         }
 
+        // test all cases
+        // width variation of paramters
         public static void CompleteTest()
         {
             var csvData = new StringBuilder();
 
             csvData.AppendLine("T1;T2;epsilon;kappa;zeta;Order;Iterations;Runtime");
 
-            for (int T1 = 0; T1 <= 3; T1++)
+            for (int T1 = 0; T1 <= 3; T1++) // vary depth 1
             {
-                for (int T2 = 0; T2 <= 3; T2++)
+                for (int T2 = 0; T2 <= 3; T2++) // vary depth 2
                 {
-                    for (double epsilon = 0.1; epsilon <= 1.0; epsilon += 0.1)
+                    for (double epsilon = 0.1; epsilon <= 1.0; epsilon += 0.1) // vary epsilon
                     {
-                        for (double kappa = 0.0; kappa <= 0.25; kappa += 0.05)
+                        for (double kappa = 0.0; kappa <= 0.25; kappa += 0.05) // vary kappa
                         {
-                            for (double zeta = 0.0; zeta <= 0.25; zeta += 0.05)
+                            for (double zeta = 0.0; zeta <= 0.25; zeta += 0.05) // vary zeta
                             {
-                                for (int order = 0; order <= 1; order++)
+                                for (int order = 0; order <= 1; order++) // vary order
                                 {
                                     SolveChampionshipProblems(T1, T2, epsilon, kappa, zeta, Convert.ToBoolean(order), 1000, 0, 1, csvData);
                                 }
@@ -196,15 +213,18 @@ namespace Championshipproblem_c_Rule
             File.WriteAllText(data + "\\Results\\RuntimeResult_CompleteTest.csv", csvData.ToString());
         }
 
+        // test critical problems
+        // extreme width variation of parameters
         public static void TestCriticalProblems()
         {
+            // define situations of critical problems
             int i = 0;
             int maxIterations = 1_000;
             int[] gamesPerGameday = new int[4] { 9, 9, 9, 9 };
             int[] gamedays = new int[4] { 20, 22, 23, 23 };
             string[] champions = new string[4] { "SC Tasmania 1900 Berlin (-1973)", "Blau-Weiß 90 Berlin (-1992)", "Hertha BSC", "SC Freiburg" };
 
-            foreach (string csv in Directory.GetFiles(data + "Critical\\", "*_*.csv"))
+            foreach (string csv in Directory.GetFiles(data + "Critical\\", "*_*.csv")) // get all critical problems
             {
                 string season = Path.GetFileNameWithoutExtension(csv);
 
@@ -212,32 +232,33 @@ namespace Championshipproblem_c_Rule
                 csvData.AppendLine("Season:" + season + ";Gameday:" + gamedays[i] + ";Champion:" + champions[i]);
                 csvData.AppendLine("T1;T2;epsilon;kappa;zeta;Order;Iterations;Runtime;Distance to Champion");
 
-                for (int T1 = 0; T1 < 3; T1++)
+                for (int T1 = 0; T1 < 3; T1++) // vary depth 1
                 {
-                    for (int T2 = 0; T2 < 4; T2++)
+                    for (int T2 = 0; T2 < 4; T2++) // vary depth 2
                     {
-                        for (double epsilon = 0.05; epsilon <= 1.0; epsilon += 0.05)
+                        for (double epsilon = 0.05; epsilon <= 1.0; epsilon += 0.05) // vary epsilon
                         {
-                            for (double kappa = 0.0; kappa <= 1.0; kappa += 0.05)
+                            for (double kappa = 0.0; kappa <= 1.0; kappa += 0.05) // vary kappa
                             {
-                                for (double zeta = 0.0; zeta <= 1.5; zeta += 0.05)
+                                for (double zeta = 0.0; zeta <= 1.5; zeta += 0.05) // vary zeta
                                 {
-                                    for (int order = 0; order < 2; order++)
+                                    for (int order = 0; order < 2; order++) // vary order
                                     {
                                         bool b = Convert.ToBoolean(order);
 
                                         Stopwatch s = new Stopwatch();
 
-                                        s.Start();
+                                        s.Start(); // start test runtime
 
-                                        ChampionshipProblem p = new ChampionshipProblem(csv, gamesPerGameday[i], c, gamedays[i], champions[i], T1, T2, epsilon, kappa, zeta, b);
-                                        p.setMaxIterations(maxIterations);
+                                        ChampionshipProblem p = new ChampionshipProblem(csv, gamesPerGameday[i], c, gamedays[i], champions[i], T1, T2, epsilon, kappa, zeta, b); // create championship problem
+                                        p.setMaxIterations(maxIterations); // set maximum of iterations
 
-                                        p.applyRules();
-                                        int counter = p.applyHeuristics(1, 0);
+                                        p.applyRules(); // apply rules to reduce problem size
+                                        int counter = p.applyHeuristics(1, 0); // apply heursitic with exit method 1
 
-                                        s.Stop();
+                                        s.Stop(); // stop test runtime
 
+                                        // sum up distance of all teams to champion
                                         int diff = 0;
 
                                         foreach (Team k in p.getTeams().Values)
@@ -266,11 +287,13 @@ namespace Championshipproblem_c_Rule
             }
         }
 
+        //calculate all championship problems
         public static void SolveChampionshipProblems(int T1, int T2, double epsilon, double kappa, double zeta, bool order, int maxIterations, int mode, int heuristicMode = 1, StringBuilder csvData = null, int limit = 0, bool depthLevel = false, int level = int.MaxValue, int rule = 0, int simpleRule = 0)
         {
-            int iterations = 0;
-            int aborted = 0;
-            Dictionary<int, int> aborts = new();
+            // initialize attributes
+            int iterations = 0; // counter for iterations
+            int aborted = 0; // counter for aborted teams
+            Dictionary<int, int> aborts = new(); // counter of rule specific aborts
             aborts.Add(1, 0);
             aborts.Add(5, 0);
             aborts.Add(6, 0);
@@ -282,11 +305,11 @@ namespace Championshipproblem_c_Rule
 
             Stopwatch s = new Stopwatch();
 
-            s.Start();
+            s.Start(); // start runtime measurement
 
-            foreach (string csv in Directory.GetFiles(data, "*_*.csv"))
+            foreach (string csv in Directory.GetFiles(data, "*_*.csv")) // get all data files
             {
-                string season = Path.GetFileNameWithoutExtension(csv);
+                string season = Path.GetFileNameWithoutExtension(csv); // get season name
 
                 if (mode.Equals(10))
                 {
@@ -294,20 +317,22 @@ namespace Championshipproblem_c_Rule
                     csvData.AppendLine("Gameday;Possible champions;Timeouts;Heuristic aborts;Avg distance to champion");
                 }
 
-                string[] lines = File.ReadAllLines(csv);
+                string[] lines = File.ReadAllLines(csv); // get all lines
 
+                // initialize list of teams and aborted teams
                 List<string> teams = new();
                 List<string> abortedTeams = new();
 
                 int i = 1;
 
+                // get all teams of the season
                 while (true)
                 {
                     string line = lines[i];
 
                     string[] entries = line.Split(",");
 
-                    if (!Convert.ToInt32(entries[0]).Equals(1))
+                    if (!Convert.ToInt32(entries[0]).Equals(1)) // break if all teams are collected
                     {
                         break;
                     }
@@ -318,63 +343,66 @@ namespace Championshipproblem_c_Rule
                     i++;
                 }
 
+                // set number of gamedays and games per gameday
                 int gamesPerGameday = i - 1;
                 int numberGamedays = gamesPerGameday * 4 - 2;
 
-                for (i = numberGamedays / 2 + 1; i < numberGamedays; i++)
+                for (i = numberGamedays / 2 + 1; i < numberGamedays; i++) // only the second half of the season is relevant
                 {
+                    // initialize counters
                     int counter = 0;
                     double overallDiff = 0;
                     int timeout = 0;
                     int heuristicsNotPossible = 0;
 
-                    for (int j = 0; j < gamesPerGameday * 2; j++)
+                    for (int j = 0; j < gamesPerGameday * 2; j++) // execute for every team
                     {
-                        if (abortedTeams.Contains(teams[j]))
+                        if (abortedTeams.Contains(teams[j])) // abort if team did not lead to a solution on an earlier gameday
                         {
                             aborted++;
                             continue;
                         }
 
-                        ChampionshipProblem p = new ChampionshipProblem(csv, gamesPerGameday, c, i, teams[j], T1, T2, epsilon, kappa, zeta, order);
-                        p.setMaxIterations(maxIterations);
+                        ChampionshipProblem p = new ChampionshipProblem(csv, gamesPerGameday, c, i, teams[j], T1, T2, epsilon, kappa, zeta, order); // create championship problem object
+                        p.setMaxIterations(maxIterations); // set max iterations
 
-                        if (mode.Equals(100))
+                        if (mode.Equals(100)) // brute force mode
                         {
-                            int result = p.bruteForce();
+                            int result = p.bruteForce(); // execute brute force
 
-                            if (result >= 0)
+                            if (result >= 0) // solution
                             {
                                 iterations += result;
                             }
-                            else if (result.Equals(-maxIterations))
+                            else if (result.Equals(-maxIterations)) // timeout
                             {
                                 iterations += maxIterations;
                             }
-                            else
+                            else // no solution
                             {
                                 abortedTeams.Add(teams[j]);
                                 iterations -= result;
                             }
                         }
-                        else if (p.applyRules(rule, aborts))
+                        else if (p.applyRules(rule, aborts)) // apply redcution rules
                         {
-                            if (p.getOverallSurplus() < limit)
+                            if (p.getOverallSurplus() < limit) // check complexity
                             {
-                                p.removeDepths();
+                                p.removeDepths(); // set depths to 0
                             }
 
                             if (depthLevel)
                             {
-                                p.setVariableDepthLevel(level);
+                                p.setVariableDepthLevel(level); // set variable depth levels
                             }
 
-                            int result = p.applyHeuristics(heuristicMode, 0, simpleRule);
+                            int result = p.applyHeuristics(heuristicMode, 0, simpleRule); // apply heuristics
 
-                            if (result >= 0)
+                            if (result >= 0) // solution
                             {
                                 int diff = 0;
 
+                                // get distance to the champion
                                 foreach (Team k in p.getTeams().Values)
                                 {
                                     diff -= k.getDiffPoints();
@@ -385,19 +413,19 @@ namespace Championshipproblem_c_Rule
 
                                 iterations += result;
                             }
-                            else if (result.Equals(-maxIterations))
+                            else if (result.Equals(-maxIterations)) // timeout
                             {
                                 timeout++;
                                 iterations += maxIterations;
                             }
-                            else
+                            else // no solution
                             {
                                 abortedTeams.Add(teams[j]);
                                 heuristicsNotPossible++;
                                 iterations -= result;
                             }
                         }
-                        else
+                        else // abort because of rules
                         {
                             abortedTeams.Add(teams[j]);
                         }
@@ -415,7 +443,7 @@ namespace Championshipproblem_c_Rule
                 }
             }
 
-            s.Stop();
+            s.Stop(); // stop runtime measurement
 
             string configuration = T1 + "_" + T2 + "_" + epsilon + "_" + kappa + "_" + zeta + "_" + order + "_" + limit + "_" + level + "_" + rule + "_" + simpleRule;
 
