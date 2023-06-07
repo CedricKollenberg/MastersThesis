@@ -462,4 +462,3 @@ namespace Rating_Ranking_Generator
         private Button button2;
     }
 }
-

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rating_Ranking_Generator
 {
+    // data strcuture to store information about the teams
     class Team
     {
         public string name;

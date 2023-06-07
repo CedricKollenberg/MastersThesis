@@ -1,4 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra;
+﻿using MathNet.Numerics.LinearAlgebra; // library for linear algebra
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +11,8 @@ namespace Rating_Ranking_Generator
 {
     public partial class Form1 : Form
     {
-        string data = @"D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Data";
+        // program variables
+        string data = @"..\..\..\..\..\Data\";
         Dictionary<string, int> inputData;
 
         public Form1()
@@ -23,11 +24,12 @@ namespace Rating_Ranking_Generator
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            foreach (string csv in Directory.GetFiles(data, "*_*.csv"))
+            foreach (string csv in Directory.GetFiles(data, "*_*.csv")) // get all data files
             {
-                string season = Path.GetFileNameWithoutExtension(csv);
+                string season = Path.GetFileNameWithoutExtension(csv); // get season
                 season = season.Replace("_", "-");
 
+                // set number of matchdays
                 if (season.Equals("1963-1964") || season.Equals("1964-1965"))
                 {
                     inputData.Add(season, 30);
@@ -45,6 +47,7 @@ namespace Rating_Ranking_Generator
             }
         }
 
+        // set number of matchdays in the combobox based on season
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             int numberGamedays = inputData[comboBox1.SelectedItem.ToString()];
@@ -68,8 +71,10 @@ namespace Rating_Ranking_Generator
             }
         }
 
+        // execute single rating and ranking calculation based on season, matchday and method
         private void button1_Click(object sender, EventArgs e)
         {
+            // check if input is correct
             string message = "You did not enter a ";
             string caption = "Input incomplete";
 
@@ -100,16 +105,19 @@ namespace Rating_Ranking_Generator
                 return;
             }
 
+            // get input values
             string season = comboBox1.SelectedItem.ToString().Replace("-", "_");
             int gameday = Convert.ToInt32(comboBox2.SelectedItem);
             string method = comboBox3.SelectedItem.ToString();
 
+            // initialize lists of teams for the rating method and the real table
             int numberTeams = 0;
             List<Team> sortedRatings = new();
             List<Team> sortedReal = new();
 
-            ApplyRatingMethods(season, gameday, method, numericUpDown1.Value, numericUpDown2.Value, ref numberTeams, ref sortedRatings, ref sortedReal);
+            ApplyRatingMethod(season, gameday, method, numericUpDown1.Value, numericUpDown2.Value, ref numberTeams, ref sortedRatings, ref sortedReal); // apply rating method
 
+            // configure table for calculated ratings and ranking
             DataTable ratingsTable = new DataTable();
             ratingsTable.Columns.Add("Rank", typeof(int));
             ratingsTable.Columns.Add("Name", typeof(string));
@@ -117,7 +125,7 @@ namespace Rating_Ranking_Generator
 
             for (int i = 0; i < numberTeams; i++)
             {
-                ratingsTable.Rows.Add(i + 1, sortedRatings[i].name, sortedRatings[i].rating);
+                ratingsTable.Rows.Add(i + 1, sortedRatings[i].name, sortedRatings[i].rating); // add entries
             }
 
             dataGridView1.DataSource = ratingsTable;
@@ -125,6 +133,7 @@ namespace Rating_Ranking_Generator
             dataGridView1.Columns[1].Width = Convert.ToInt32(dataGridView1.Width * 0.35);
             dataGridView1.Columns[2].Width = Convert.ToInt32(dataGridView1.Width * 0.5);
 
+            // configure table for real ranking
             DataTable realTable = new DataTable();
             realTable.Columns.Add("Rank", typeof(int));
             realTable.Columns.Add("Name", typeof(string));
@@ -133,8 +142,8 @@ namespace Rating_Ranking_Generator
 
             for (int i = 0; i < numberTeams; i++)
             {
-                string g = sortedReal[i].goals + ":" + sortedReal[i].counterGoals;
-                realTable.Rows.Add(i + 1, sortedReal[i].name, g, sortedReal[i].points);
+                string g = sortedReal[i].goals + ":" + sortedReal[i].counterGoals; // write team's score
+                realTable.Rows.Add(i + 1, sortedReal[i].name, g, sortedReal[i].points); // add entries
             }
 
             dataGridView2.DataSource = realTable;
@@ -144,8 +153,11 @@ namespace Rating_Ranking_Generator
             dataGridView2.Columns[2].Width = Convert.ToInt32(dataGridView2.Width * 0.25);
         }
 
-        private void ApplyRatingMethods(string season, int gameday, string method, decimal K, decimal xi, ref int numberTeams, ref List<Team> sortedRatings, ref List<Team> sortedReal)
+        // apply rating method
+        // based on Who's #1?: The Science of Rating and Ranking, Langville and Meyer
+        private void ApplyRatingMethod(string season, int gameday, string method, decimal K, decimal xi, ref int numberTeams, ref List<Team> sortedRatings, ref List<Team> sortedReal)
         {
+            // set number of teams
             if (season.Equals("1963_1964") || season.Equals("1964_1965"))
             {
                 numberTeams = 16;
@@ -159,17 +171,17 @@ namespace Rating_Ranking_Generator
                 numberTeams = 18;
             }
 
-            int numberGames = numberTeams / 2 * gameday;
+            int numberGames = numberTeams / 2 * gameday; // set number of games
 
             List<Team> ratings = new();
             Dictionary<string, Team> teams = new();
 
-            double[] r = new double[numberTeams];
+            double[] r = new double[numberTeams];  // ratings vector
+            double[,] M = new double[numberTeams, numberTeams]; // matrix for Massey abd Colley
+            double[] p = new double[numberTeams]; // constant vector for Massey and Colley
+            double[,] S = new double[numberTeams, numberTeams]; // matrix for Keener
 
-            double[,] M = new double[numberTeams, numberTeams];
-            double[] p = new double[numberTeams];
-            double[,] S = new double[numberTeams, numberTeams];
-
+            // initialize matrices and vectors
             for (int j = 0; j < numberTeams; j++)
             {
                 for (int k = 0; k < numberTeams; k++)
@@ -207,7 +219,7 @@ namespace Rating_Ranking_Generator
                 }
             }
 
-            string[] lines = File.ReadAllLines(data + @"\" + season + ".csv");
+            string[] lines = File.ReadAllLines(data + @"\" + season + ".csv"); // read data file
 
             int counter = 0;
 
@@ -222,7 +234,7 @@ namespace Rating_Ranking_Generator
                 int homegoals = Convert.ToInt32(result.Split("-")[0]);
                 int awaygoals = Convert.ToInt32(result.Split("-")[1]);
 
-                if (i <= numberTeams / 2)
+                if (i <= numberTeams / 2) // get team names
                 {
                     teams.Add(homeTeam, new Team(homeTeam, counter++));
                     teams.Add(awayTeam, new Team(awayTeam, counter++));
@@ -235,7 +247,7 @@ namespace Rating_Ranking_Generator
 
                 double Sij, Sji;
 
-                if (homegoals > awaygoals)
+                if (homegoals > awaygoals) // home team wins
                 {
                     teams[homeTeam].points += 3;
                     teams[homeTeam].wins += 1;
@@ -244,7 +256,7 @@ namespace Rating_Ranking_Generator
                     Sij = 1;
                     Sji = 0;
                 }
-                else if (awaygoals > homegoals)
+                else if (awaygoals > homegoals) // away team wins
                 {
                     teams[awayTeam].points += 3;
                     teams[awayTeam].wins += 1;
@@ -253,7 +265,7 @@ namespace Rating_Ranking_Generator
                     Sij = 0;
                     Sji = 1;
                 }
-                else
+                else // draw
                 {
                     teams[homeTeam].points += 1;
                     teams[awayTeam].points += 1;
@@ -269,6 +281,8 @@ namespace Rating_Ranking_Generator
                     double ratingY = r[teams[awayTeam].index];
                     double Eij = 1.0 / (1.0 + Math.Pow(10, -(ratingX - ratingY) / (double)xi));
                     double Eji = 1.0 / (1.0 + Math.Pow(10, -(ratingY - ratingX) / (double)xi));
+
+                    // adjust Elo ratings
                     r[teams[homeTeam].index] += (double)K * (Sij - Eij);
                     r[teams[awayTeam].index] += (double)K * (Sji - Eji);
                 }
@@ -277,11 +291,13 @@ namespace Rating_Ranking_Generator
                 M[teams[awayTeam].index, teams[homeTeam].index] -= 1;
             }
 
+            // set differential goals
             foreach (Team t in teams.Values)
             {
                 t.diffGoals = t.goals - t.counterGoals;
             }
 
+            // principle realization of the rating methods
             switch (method)
             {
                 case "Massey":
@@ -379,7 +395,8 @@ namespace Rating_Ranking_Generator
 
             sortedReal = real.OrderBy(s => s.points).ThenBy(s => s.diffGoals).ThenBy(s => s.goals).Reverse().ToList();
         }
-
+        
+        // evaluation of the correctness of the rating methods
         private void CalculateDifferences()
         {
             string[] methods = new string[] { "Massey", "Colley", "Keener", "Elo" };
@@ -390,9 +407,9 @@ namespace Rating_Ranking_Generator
             var csvData = new StringBuilder();
             csvData.AppendLine("Method;Season;Gameday;K-Factor;Xi-Factor;Difference");
 
-            foreach (string method in methods)
+            foreach (string method in methods) // for each method
             {
-                foreach (string csv in Directory.GetFiles(data, "*_*.csv"))
+                foreach (string csv in Directory.GetFiles(data, "*_*.csv")) // for each data file
                 {
                     string season = Path.GetFileNameWithoutExtension(csv);
 
@@ -413,27 +430,27 @@ namespace Rating_Ranking_Generator
 
                     int numberGamedays = (numberTeams - 1) * 2;
 
-                    for (int i = 1; i <= numberGamedays; i++)
+                    for (int i = 1; i <= numberGamedays; i++) // for each gameday
                     {
                         List<Team> sortedRatings = new();
                         List<Team> sortedReal = new();
 
                         if (method.Equals("Elo"))
                         {
-                            for (K = 10; K <= 100; K += 10)
+                            for (K = 10; K <= 100; K += 10) // vary K
                             {
-                                for (xi = 100; xi <= 1000; xi += 100)
+                                for (xi = 100; xi <= 1000; xi += 100) // vary xi
                                 {
-                                    ApplyRatingMethods(season, i, method, K, xi, ref numberTeams, ref sortedRatings, ref sortedReal);
-                                    int diff = CalculateDifference(sortedReal, sortedRatings);
+                                    ApplyRatingMethod(season, i, method, K, xi, ref numberTeams, ref sortedRatings, ref sortedReal); // execute rating calculation
+                                    int diff = CalculateDifference(sortedReal, sortedRatings); // calculate difference between calculated and real ranking
                                     csvData.AppendLine(method + ";" + season + ";" + i + ";" + K + ";" + xi + ";" + diff);
                                 }
                             }
                         }
                         else
                         {
-                            ApplyRatingMethods(season, i, method, K, xi, ref numberTeams, ref sortedRatings, ref sortedReal);
-                            int diff = CalculateDifference(sortedReal, sortedRatings);
+                            ApplyRatingMethod(season, i, method, K, xi, ref numberTeams, ref sortedRatings, ref sortedReal); // execute rating calculation
+                            int diff = CalculateDifference(sortedReal, sortedRatings); // calculate difference between calculated and real ranking
                             csvData.AppendLine(method + ";" + season + ";" + i + ";;;" + diff);
                         }                        
                     }
@@ -443,18 +460,20 @@ namespace Rating_Ranking_Generator
             File.WriteAllText(data + "\\Results\\RatingMethods_Differences.csv", csvData.ToString());
         }
 
+        // calculate difference between calculated and real ranking
         private int CalculateDifference(List<Team> sortedReal, List<Team> sortedRatings)
         {
             int diff = 0;
 
             for (int i = 0; i < sortedReal.Count; i++)
             {
-                diff += Math.Abs(i - sortedRatings.IndexOf(sortedRatings.Find(s => s.name.Equals(sortedReal[i].name))));
+                diff += Math.Abs(i - sortedRatings.IndexOf(sortedRatings.Find(s => s.name.Equals(sortedReal[i].name)))); // get abs of ranks
             }
 
             return diff;
         }
 
+        // switch visibility of Elo parameters 
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox3.SelectedItem.Equals("Elo"))
@@ -467,6 +486,7 @@ namespace Rating_Ranking_Generator
             }
         }
 
+        // print whole results
         private void button2_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;

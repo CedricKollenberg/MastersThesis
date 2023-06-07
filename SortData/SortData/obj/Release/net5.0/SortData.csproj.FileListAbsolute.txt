@@ -1,0 +1,15 @@
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\bin\Release\net5.0\SortData.exe
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\bin\Release\net5.0\SortData.deps.json
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\bin\Release\net5.0\SortData.runtimeconfig.json
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\bin\Release\net5.0\SortData.runtimeconfig.dev.json
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\bin\Release\net5.0\SortData.dll
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\bin\Release\net5.0\ref\SortData.dll
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\bin\Release\net5.0\SortData.pdb
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\obj\Release\net5.0\SortData.GeneratedMSBuildEditorConfig.editorconfig
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\obj\Release\net5.0\SortData.AssemblyInfoInputs.cache
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\obj\Release\net5.0\SortData.AssemblyInfo.cs
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\obj\Release\net5.0\SortData.csproj.CoreCompileInputs.cache
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\obj\Release\net5.0\SortData.dll
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\obj\Release\net5.0\ref\SortData.dll
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\obj\Release\net5.0\SortData.pdb
+D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\SortData\SortData\obj\Release\net5.0\SortData.genruntimeconfig.cache

@@ -43,6 +43,7 @@ namespace Championshipproblem_s_Rule
             File.WriteAllText(data + "Results\\ChampionshipProblemResult_s-Rule.csv", csvData.ToString());
         }
 
+        // solve championship problem
         public static void SolveChampionshipproblems(int position, int algorithmMode, int dataStructure, StringBuilder csvData)
         {
             string modeName = null;
