@@ -2,6 +2,7 @@
 
 namespace Championshipproblem_s_Rule
 {
+    // data structure to store information about the teams
     class Team
     {
         string name;

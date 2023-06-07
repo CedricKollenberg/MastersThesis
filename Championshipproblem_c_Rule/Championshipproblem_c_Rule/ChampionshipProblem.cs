@@ -109,7 +109,7 @@ namespace Championshipproblem_c_Rule
                 string awayTeam = entries[4];
                 string result = entries[3];
 
-                if (i <= gamesPerGameday) // add teams to the list
+                if (i <= gamesPerGameday) // add teams to the dictionary
                 {
                     teams.Add(homeTeam, new Team(homeTeam));
                     teams.Add(awayTeam, new Team(awayTeam));

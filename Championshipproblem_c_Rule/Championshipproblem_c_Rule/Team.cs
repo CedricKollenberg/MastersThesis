@@ -2,7 +2,7 @@
 
 namespace Championshipproblem_c_Rule
 {
-    // class to store information abput the teams
+    // class to store information about the teams
     class Team
     {
         private string name;

@@ -1,4 +1,10 @@
-﻿using System;
+﻿// author: Cedric Kollenberg
+//         Hochschule Fulda, University of Applied Sciences
+//         Department of Applied Computer Science
+//
+// for detailed explanations, check out my master's thesis
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,24 +15,25 @@ namespace Championshipproblem_s_Rule
 {
     class Program
     {
-        static string data = @"D:\Documents\Studium\Hochschule Fulda\Master\Masterarbeit\Implementierungen\Data\";
+        // program variables
+        static string data = @"..\..\..\..\..\Data\";
         static int s = 2;
 
         static void Main(string[] args)
         {
-            int position = 1;
+            int position = 1; // position of the championship problem to be checked
 
             StringBuilder csvData = new();
 
             csvData.AppendLine("Algorithm;Data Structure;Runtime;Iterations;AddNode;RemoveNode;AddEdge;RemoveEdge;GetEdges;GetNeighbours;GetPredecessors;SetCapacity;AddCapacity;GetCapacity;GetSize");
 
-            for (int k = 0; k < 10; k++)
+            for (int k = 0; k < 10; k++) // 10 iterations
             {
                 Console.WriteLine("Iteration " + k);
 
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 4; i++) // iterate algorithm
                 {
-                    for (int j = 0; j < 2; j++)
+                    for (int j = 0; j < 2; j++) // iterate data structure
                     {
                         SolveChampionshipproblems(position, i, j, csvData);
                     }
@@ -41,6 +48,7 @@ namespace Championshipproblem_s_Rule
             string modeName = null;
             string dataStructureName = null;
 
+            // set algorithm name
             switch (algorithmMode)
             {
                 case 0:
@@ -59,6 +67,7 @@ namespace Championshipproblem_s_Rule
                     return;
             }
 
+            // set data structure name
             switch (dataStructure)
             {
                 case 0:
@@ -71,40 +80,43 @@ namespace Championshipproblem_s_Rule
                     return;
             }
 
+            // initialize array to count graph-specific operations
             int[] counts = new int[11];
             for (int l = 0; l < 11; l++)
             {
                 counts[l] = 0;
             }
 
-            int iterations = 0;
+            int iterations = 0; // number of iterations
 
             Console.WriteLine(modeName + "_" + dataStructureName);
 
             Stopwatch timer = new Stopwatch();
 
-            timer.Start();
+            timer.Start(); // start runtime measurement
 
-            foreach (string csv in Directory.GetFiles(data, "*_*.csv"))
+            foreach (string csv in Directory.GetFiles(data, "*_*.csv")) // get all data files
             {
-                string season = Path.GetFileNameWithoutExtension(csv);
+                string season = Path.GetFileNameWithoutExtension(csv); // get season name
 
                 Console.WriteLine(season);
 
-                string[] lines = File.ReadAllLines(csv);
+                string[] lines = File.ReadAllLines(csv); // get all lines
 
+                // initialize list of teams and aborted teams
                 List<string> teamNames = new();
                 List<string> abortedTeams = new();
 
                 int i = 1;
 
+                // get all teams of the season
                 while (true)
                 {
                     string line = lines[i];
 
                     string[] entries = line.Split(",");
 
-                    if (!Convert.ToInt32(entries[0]).Equals(1))
+                    if (!Convert.ToInt32(entries[0]).Equals(1)) // break if all teams are collected
                     {
                         break;
                     }
@@ -115,25 +127,26 @@ namespace Championshipproblem_s_Rule
                     i++;
                 }
 
+                // set number of gamedays and games per gameday
                 int gamesPerGameday = i - 1;
                 int numberGamedays = gamesPerGameday * 4 - 2;
 
-                for (i = numberGamedays / 2 + 1; i < numberGamedays; i++)
+                for (i = numberGamedays / 2 + 1; i < numberGamedays; i++) // only the second half of the season is relevant
                 {
                     int counter = 0;
 
-                    foreach (string k in teamNames)
+                    foreach (string k in teamNames) // execute for every team
                     {
-                        Dictionary<string, Team> teams = new();
+                        Dictionary<string, Team> teams = new(); // initialize dictionary to store teams
 
-                        if (abortedTeams.Contains(k))
+                        if (abortedTeams.Contains(k)) // abort if team did not lead to a solution on an earlier gameday
                         {
                             continue;
                         }
 
-                        int consideredGames = i * gamesPerGameday;
+                        int consideredGames = i * gamesPerGameday; // calculate number of games to be considered for the current table 
 
-                        // results
+                        // check all games already played and enter results
                         for (int j = 1; j <= consideredGames; j++)
                         {
                             string line = lines[j];
@@ -144,7 +157,7 @@ namespace Championshipproblem_s_Rule
                             string awayTeam = entries[4];
                             string result = entries[3];
 
-                            if (j <= gamesPerGameday)
+                            if (j <= gamesPerGameday) // add teams to the dictionary
                             {
                                 teams.Add(homeTeam, new Team(homeTeam, 0));
                                 teams.Add(awayTeam, new Team(awayTeam, 0));
@@ -156,29 +169,31 @@ namespace Championshipproblem_s_Rule
                             int homegoals = Convert.ToInt32(result.Split("-")[0]);
                             int awaygoals = Convert.ToInt32(result.Split("-")[1]);
 
-                            if (homegoals > awaygoals)
+                            // handle result
+                            if (homegoals > awaygoals) // home team wins
                             {
                                 h.addPoints(s);
                             }
-                            else if (awaygoals > homegoals)
+                            else if (awaygoals > homegoals) // away team wins
                             {
                                 a.addPoints(s);
                             }
-                            else
+                            else // draw
                             {
                                 h.addPoints(1);
                                 a.addPoints(1);
                             }
                         }
 
+                        // set max points
                         foreach (Team t in teams.Values)
                         {
                             t.setMaxPoints(t.getPoints());
                         }
 
-                        int xCounter = 0;
+                        int xCounter = 0; // counter for team x
 
-                        // left games
+                        // remaining games
                         for (int m = consideredGames + 1; m < lines.Length; m++)
                         {
                             string line = lines[m];
@@ -191,19 +206,19 @@ namespace Championshipproblem_s_Rule
                             Team h = teams[homeTeam];
                             Team a = teams[awayTeam];
 
-                            if (h.getName().Equals(k))
+                            if (h.getName().Equals(k)) // add win for the team x
                             {
                                 h.addPoints(s);
                                 h.addMaxPoints(s);
                                 xCounter++;
                             }
-                            else if (a.getName().Equals(k))
+                            else if (a.getName().Equals(k)) // add win for the team x
                             {
                                 a.addPoints(s);
                                 a.addMaxPoints(s);
                                 xCounter++;
                             }
-                            else
+                            else // add opponent to other team's opponent list
                             {
                                 h.addOpponent(a.getName());
                                 a.addOpponent(h.getName());
@@ -214,14 +229,15 @@ namespace Championshipproblem_s_Rule
                         }
 
                         Team x = teams[k];
-                        teams.Remove(k);
+                        teams.Remove(k); // remove team x, since it is the team to become champion and must not be considered
 
-                        if (!applyRules(teams,x))
+                        if (!applyRules(teams,x)) // apply reduction rules
                         {
-                            abortedTeams.Add(x.getName());
+                            abortedTeams.Add(x.getName()); // add team x to the aborted list
                             continue;
                         }
 
+                        // set number of matches to be considered for the network
                         int matchNumber = 0;
 
                         foreach (Team t in teams.Values)
@@ -237,10 +253,11 @@ namespace Championshipproblem_s_Rule
 
                         matchNumber /= 2;
 
-                        string[,] matches = new string[matchNumber, 2];
+                        string[,] matches = new string[matchNumber, 2]; // aray for matches
 
                         int matchCounter = 0;
 
+                        // add matches to array
                         foreach (Team t in teams.Values)
                         {
                             for (int p= 0; p < t.getOpponents().Count;)
@@ -254,8 +271,10 @@ namespace Championshipproblem_s_Rule
                             }
                         }
 
+                        // create list of key value pairs
                         List<KeyValuePair<string, Team>> sortedTeams = teams.ToList();
 
+                        // sort list accroding to max points of teams
                         sortedTeams.Sort(
                             delegate (KeyValuePair<string, Team> pair1,
                             KeyValuePair<string, Team> pair2)
@@ -264,28 +283,28 @@ namespace Championshipproblem_s_Rule
                             }
                         );
 
-                        int higherTeams = 0;
+                        int higherTeams = 0; // initialize number of teams ranked higher than x
 
-                        int nodeNumber = matches.GetLength(0) + teams.Count + 2;
+                        int nodeNumber = matches.GetLength(0) + teams.Count + 2; // set number of nodes
 
-                        Graph graph = null;
+                        Graph graph = null; // create graph
 
                         switch (dataStructure)
                         {
-                            case 0:
+                            case 0: // adjacency matrix
 
-                                List<List<float>> matrix = new();
+                                List<List<float>> matrix = new(); // initialize matrix
 
-                                for (int n = 0; n < nodeNumber; n++)
+                                for (int n = 0; n < nodeNumber; n++) //iterate through each node
                                 {
                                     matrix.Add(new());
-                                    matrix[n].Add(0);
+                                    matrix[n].Add(0); // 0 for each column, since there is no edge into the source
 
                                     for (int j = 1; j < nodeNumber; j++)
                                     {
-                                        if (n == 0)
+                                        if (n == 0) // source node
                                         {
-                                            if (j <= matches.GetLength(0))
+                                            if (j <= matches.GetLength(0)) // edge to each team node
                                             {
                                                 matrix[n].Add(s);
                                             }
@@ -294,11 +313,13 @@ namespace Championshipproblem_s_Rule
                                                 matrix[n].Add(0);
                                             }
                                         }
-                                        else if (n <= matches.GetLength(0))
+                                        else if (n <= matches.GetLength(0)) // game nodes
                                         {
+                                            // team names
                                             string t1 = matches[n - 1, 0];
                                             string t2 = matches[n - 1, 1];
 
+                                            // set node for corresponding team indices
                                             if (sortedTeams.IndexOf(new(t1, teams[t1])) + matches.GetLength(0) + 1 == j || sortedTeams.IndexOf(new(t2, teams[t2])) + matches.GetLength(0) + 1 == j)
                                             {
                                                 matrix[n].Add(s);
@@ -308,11 +329,11 @@ namespace Championshipproblem_s_Rule
                                                 matrix[n].Add(0);
                                             }
                                         }
-                                        else if (n == nodeNumber - 1)
+                                        else if (n == nodeNumber - 1) // sink node
                                         {
-                                            matrix[n].Add(0);
+                                            matrix[n].Add(0); // no outgoing edges
                                         }
-                                        else
+                                        else // edges from the teams to the sink
                                         {
                                             if (j < nodeNumber - 1)
                                             {
@@ -320,81 +341,84 @@ namespace Championshipproblem_s_Rule
                                             }
                                             else
                                             {
-                                                int index = n - (matches.GetLength(0) + 1);
-                                                int diff = x.getPoints() - sortedTeams[index].Value.getPoints();
+                                                int index = n - (matches.GetLength(0) + 1); // get index of team
+                                                int diff = x.getPoints() - sortedTeams[index].Value.getPoints(); // calculate edge weight
 
-                                                if (diff < 0 || index < position - 1)
+                                                if (diff < 0 || index < position - 1) // if the difference is negative or the team is allowed to be higher ranked than x
                                                 {
-                                                    matrix[n].Add(float.MaxValue);
+                                                    matrix[n].Add(float.MaxValue); // set infinity edge
                                                     higherTeams++;
                                                 }
                                                 else
                                                 {
-                                                    matrix[n].Add(diff);
+                                                    matrix[n].Add(diff); // set diff edge
                                                 }
                                             }
                                         }
                                     }
                                 }
 
-                                graph = new AdjacencyMatrix(matrix, counts);
+                                graph = new AdjacencyMatrix(matrix, counts); // initialize graph
 
                                 break;
                             case 1:
 
-                                List<List<Edge>> adjacencyList = new();
+                                List<List<Edge>> adjacencyList = new(); // initialize list
 
-                                for (int n = 0; n < nodeNumber; n++)
+                                for (int n = 0; n < nodeNumber; n++) //iterate through each node
                                 {
-                                    adjacencyList.Add(new());
+                                    adjacencyList.Add(new()); // add neighbour list
                                 }
-                                for (int n = 0; n < nodeNumber; n++)
+                                for (int n = 0; n < nodeNumber; n++) // iterate through each node
                                 {
-                                    if (n.Equals(0))
+                                    if (n.Equals(0)) // source node
                                     {
-                                        for (int j = 1; j <= matches.GetLength(0); j++)
+                                        for (int j = 1; j <= matches.GetLength(0); j++) // add edges to all games
                                         {
                                             adjacencyList[0].Add(new Edge(0, j, s));
                                         }
                                     }
-                                    else if (n <= matches.GetLength(0))
+                                    else if (n <= matches.GetLength(0)) // game nodes
                                     {
+                                        // get team names
                                         string t1 = matches[n - 1, 0];
                                         string t2 = matches[n - 1, 1];
 
+                                        // add edges to teams
                                         adjacencyList[n].Add(new Edge(n, sortedTeams.IndexOf(new(t1, teams[t1])) + matches.GetLength(0) + 1, s));
                                         adjacencyList[n].Add(new Edge(n, sortedTeams.IndexOf(new(t2, teams[t2])) + matches.GetLength(0) + 1, s));
                                     }
-                                    else if (n < nodeNumber - 1)
+                                    else if (n < nodeNumber - 1) // team nodes
                                     {
-                                        int index = n - (matches.GetLength(0) + 1);
-                                        int diff = x.getPoints() - sortedTeams[index].Value.getPoints();
+                                        int index = n - (matches.GetLength(0) + 1); // get team index
+                                        int diff = x.getPoints() - sortedTeams[index].Value.getPoints(); // // calculate edge weight
 
-                                        if (diff < 0 || index < position - 1)
+                                        if (diff < 0 || index < position - 1) // if the difference is negative or the team is allowed to be higher ranked than x
                                         {
-                                            adjacencyList[n].Add(new Edge(n, nodeNumber - 1, float.MaxValue));
+                                            adjacencyList[n].Add(new Edge(n, nodeNumber - 1, float.MaxValue)); // set infinity edge
                                             higherTeams++;
                                         }
                                         else if (diff > 0)
                                         {
-                                            adjacencyList[n].Add(new Edge(n, nodeNumber - 1, diff));
+                                            adjacencyList[n].Add(new Edge(n, nodeNumber - 1, diff)); // set diff edge
                                         }
                                     }
                                 }
 
-                                graph = new AdjacencyList(adjacencyList, counts);
+                                graph = new AdjacencyList(adjacencyList, counts); // initialize graph
 
                                 break;
                         }
 
-                        if (higherTeams > position - 1)
+                        if (higherTeams > position - 1) // check if there are more teams positioned higher than allowed
                         {
-                            abortedTeams.Add(x.getName());
+                            abortedTeams.Add(x.getName()); // abort
                             continue;
                         }
 
                         float flow;
 
+                        // execute max flow network algorithm
                         switch (algorithmMode)
                         {
                             case 0:
@@ -413,9 +437,9 @@ namespace Championshipproblem_s_Rule
                                 return;
                         }
 
-                        counts = graph.getCounts();
+                        counts = graph.getCounts(); // get number of graph-specific operations
 
-                        if (flow == matches.GetLength(0) * s)
+                        if (flow == matches.GetLength(0) * s) // check if there is a solution
                         {
                             counter++;
                         }
@@ -427,14 +451,15 @@ namespace Championshipproblem_s_Rule
                 }
             }
 
-            timer.Stop();
+            timer.Stop(); // stop runtime measrement
 
             csvData.AppendLine(modeName + ";" + dataStructureName + ";" + timer.Elapsed + ";" + iterations + ";" + counts[0] + ";" + counts[1] + ";" + counts[2] + ";" + counts[3] + ";" + counts[4] + ";" + counts[5] + ";" + counts[6] + ";" + counts[7] + ";" + counts[8] + ";" + counts[9] + ";" + counts[10]); ;
         }
 
+        // apply reduction rules
         public static bool applyRules(Dictionary<string,Team> teams, Team x)
         {
-            // Rule 1
+            // apply rule 1
             foreach (Team y in teams.Values)
             {
                 if (y.getPoints() > x.getPoints())
@@ -444,39 +469,42 @@ namespace Championshipproblem_s_Rule
                 }
             }
 
-            // Rule 2
-            Queue<Team> consideredTeams = new Queue<Team>();
+            // apply rule 2
+            Queue<Team> consideredTeams = new Queue<Team>(); // initiliaze queue for all teams to be considered
 
+            // fill queue with teams from team list
             foreach (Team t in teams.Values)
             {
                 consideredTeams.Enqueue(t);
             }
 
+            // as long as there are teams in the queue
             while (consideredTeams.Count > 0)
             {
                 Team y = consideredTeams.Dequeue();
 
-                int possiblePoints = y.getPoints() + y.getOpponents().Count * s;
+                int possiblePoints = y.getPoints() + y.getOpponents().Count * s; // calculate maximum possible number of points
 
-                if (possiblePoints <= x.getPoints())
+                if (possiblePoints <= x.getPoints()) // if it is smaller than x's points, team should win all games
                 {
                     for (int i = 0; i < y.getOpponents().Count;)
                     {
                         string t = y.getOpponents()[i];
                         y.addPoints(s);
                         Team k = teams[t];
-                        consideredTeams.Enqueue(k);
+                        consideredTeams.Enqueue(k); // add opponent to the queue
                         y.removeOpponent(t);
                         k.removeOpponent(y.getName());
                     }
                 }
             }
 
-            // Rule 3
-            foreach (Team y in teams.Values)
+            // apply rule 3
+                foreach (Team y in teams.Values)
             {
-                if (y.getPoints().Equals(x.getPoints()))
+                if (y.getPoints().Equals(x.getPoints())) // if a team has exactly the same number of points as x, this team should lose all of their games
                 {
+                    // set loss against each opponent
                     for (int i = 0; i < y.getOpponents().Count;)
                     {
                         string t = y.getOpponents()[i];
@@ -488,13 +516,14 @@ namespace Championshipproblem_s_Rule
                 }
             }
 
-            // Rule 4
+            // apply rule 4
             foreach (Team y in teams.Values)
             {
-                int possiblePoints = y.getPoints() + y.getOpponents().Count;
+                int possiblePoints = y.getPoints() + y.getOpponents().Count; // calculate number of points if team draws all games
 
-                if (y.getPoints() + s > x.getPoints() && possiblePoints <= x.getPoints())
+                if (y.getPoints() + s > x.getPoints() && possiblePoints <= x.getPoints()) // if this is smaller than x's points and the team cannot win another game
                 {
+                    // set all games as draw
                     for (int i = 0; i < y.getOpponents().Count;)
                     {
                         string t = y.getOpponents()[i];
@@ -507,7 +536,7 @@ namespace Championshipproblem_s_Rule
                 }
             }
 
-            // Rule 5
+            // apply rule 5 -> same as rule 1
             foreach (Team y in teams.Values)
             {
                 if (y.getPoints() > x.getPoints())
@@ -517,25 +546,26 @@ namespace Championshipproblem_s_Rule
                 }
             }
 
-            // Rule 6
+            // set overall surplus and complete receptiveness
             int overallCompleteReceptiveness = 0;
             int overallSurplus = 0;
 
-            foreach (Team y in teams.Values)
+            // apply rule 6
+            foreach (Team y in teams.Values) // check each team
             {
                 int diff;
 
-                if ((diff = y.getPoints() + y.getOpponents().Count - x.getPoints()) > 0)
+                if ((diff = y.getPoints() + y.getOpponents().Count - x.getPoints()) > 0) // calculate the surplus
                 {
-                    overallSurplus += diff;
+                    overallSurplus += diff; // surplus team
                 }
                 else
                 {
-                    overallCompleteReceptiveness -= diff;
+                    overallCompleteReceptiveness -= diff; // deficit team
                 }
             }
 
-            if (overallSurplus > overallCompleteReceptiveness)
+            if (overallSurplus > overallCompleteReceptiveness) // abort if surplus is greater than complete receptiveness
             {
                 //Console.WriteLine("Championship problem is not possible.\nReason: Rule 6\nDetails: Overall surplus of " + overallSurplus + " is bigger than the overall complete receptiveness " + overallCompleteReceptiveness + ".");
                 return false;

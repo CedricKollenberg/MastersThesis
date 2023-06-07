@@ -2,16 +2,19 @@
 
 namespace Championshipproblem_s_Rule
 {
+    // data structure for the adjacency list
     class AdjacencyList : Graph
     {
         private List<List<Edge>> adjacencyList;
 
+        // constructor
         public AdjacencyList(List<List<Edge>> adjacencyList, int[] counts)
         {
             this.adjacencyList = adjacencyList;
             this.counts = counts;
         }
 
+        // copy graph
         public override Graph copy()
         {
             List<List<Edge>> g = new();
@@ -29,6 +32,7 @@ namespace Championshipproblem_s_Rule
             return new AdjacencyList(g,counts);
         }
 
+        // add node to the graph
         public override void addNode(int n)
         {
             counts[0]++;
@@ -41,6 +45,7 @@ namespace Championshipproblem_s_Rule
             }
         }
 
+        // remove node from the graph
         public override void removeNode(int n)
         {
             counts[1]++;
@@ -67,6 +72,7 @@ namespace Championshipproblem_s_Rule
             }
         }
 
+        // add edge to the graph
         public override void addEdge(int m, int n, float c)
         {
             counts[2]++;
@@ -84,6 +90,7 @@ namespace Championshipproblem_s_Rule
             adjacencyList[m].Add(new Edge(m,n,c));
         }
 
+        // remove edge from the graph
         public override void removeEdge(int m, int n)
         {
             counts[3]++;
@@ -94,6 +101,7 @@ namespace Championshipproblem_s_Rule
             }
         }
 
+        // get all the edges of the graph
         public override List<Edge> getEdges()
         {
             counts[4]++;
@@ -111,6 +119,7 @@ namespace Championshipproblem_s_Rule
             return edges;
         }
 
+        // get all neighbours
         public override List<Edge> getNeighbours(int n)
         {
             counts[5]++;
@@ -118,6 +127,7 @@ namespace Championshipproblem_s_Rule
             return adjacencyList[n];
         }
 
+        // get all predecessors
         public override List<Edge> getPredecessors(int n)
         {
             counts[6]++;
@@ -139,6 +149,7 @@ namespace Championshipproblem_s_Rule
             return predecessors;
         }
 
+        // set the capacity of an edge
         public override void setCapacity(int n1, int n2, float c)
         {
             counts[7]++;
@@ -161,6 +172,7 @@ namespace Championshipproblem_s_Rule
             }
         }
 
+        // add a value to an edge capacity
         public override void addCapacity(int n1, int n2, float c)
         {
             counts[8]++;
@@ -183,6 +195,7 @@ namespace Championshipproblem_s_Rule
             }
         }
 
+        // get the capacity of an edge
         public override float getCapacity(int n1, int n2)
         {
             counts[9]++;
@@ -197,6 +210,7 @@ namespace Championshipproblem_s_Rule
             return e.c;
         }
 
+        // get the number of nodes of the graph
         public override int getSize()
         {
             counts[10]++;

@@ -2,11 +2,12 @@
 
 namespace Championshipproblem_s_Rule
 {
+    // data structure to store an edge
     class Edge
     {
-        public int n1;
-        public int n2;
-        public float c;
+        public int n1; // start node
+        public int n2; // end node
+        public float c; // capacity
 
         public Edge(int n1, int n2, float c)
         {
@@ -15,6 +16,7 @@ namespace Championshipproblem_s_Rule
             this.c = c;
         }
 
+        // check if a list of edges contains an edge with one specific node
         public static Edge contains(List<Edge> edges, int? n1, int? n2)
         {
             foreach (Edge e in edges)

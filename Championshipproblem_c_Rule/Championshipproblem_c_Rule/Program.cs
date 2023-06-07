@@ -1,4 +1,10 @@
-﻿using System;
+﻿// author: Cedric Kollenberg
+//         Hochschule Fulda, University of Applied Sciences
+//         Department of Applied Computer Science
+//
+// for detailed explanations, check out my master's thesis
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
